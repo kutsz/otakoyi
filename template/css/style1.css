@@ -1,0 +1,36 @@
+
+.pagination li{
+    display: inline;
+   
+}
+
+.pagination  .active  a, .pagination  .active  a:hover, .pagination  .active  a:focus {
+    background-color: #FE980F;
+    border-color: #FE980F;
+    color: #FFFFFF;
+    cursor: default;
+    z-index: 2;
+}
+
+.pagination  li  a {
+    background-color: #f0f0e9;
+    border: 0;
+    float: left;
+    line-height: 1.42857;
+    margin-left: 1px;
+    padding: 4px 12px;
+    position: relative;
+    text-decoration: none;
+    margin-right: 4px;
+    color:#000;
+}
+
+.pagination  li  a:hover{
+    background:#FE980F;
+    color:#fff;
+}
+
+table td,th{
+	border: 2px solid grey;
+}
+
