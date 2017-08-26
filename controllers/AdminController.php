@@ -61,40 +61,71 @@ class AdminController extends AdminBase {
 
 	public function actionCabinet() {
 
-		require_once ROOT . '/views/admin/cabinet.php';
-		return true;
+		$flag = parent::checkAdmin();
+
+		if ($flag) {
+
+			if (isset($_POST['submitSearch'])) {
+
+				$search = isset($_POST['search']) ? $this->input($_POST['search']) : null;
+
+				if (!empty($search)) {
+					$users = [];
+					$users = Admin::searchData($search);
+				} else {
+					//$err = "<p>Вы обратились к файлу без необходимых параметров</p>";
+				}
+
+			}
+
+			require_once ROOT . '/views/admin/cabinet.php';
+			return true;
+		}
 	}
 
-	/**
-	 * Action для стартовой страницы "Панель администратора"
-	 */
-	// public function actionIndex() {
-	// 	// Проверка доступа
-	// 	self::checkAdmin();
+	public function actionDelete() {
 
-	// 	// Подключаем вид
-	// 	require_once ROOT . '/views/admin/index.php';
-	// 	return true;
-	// }
+		if (isset($_POST['submitDelete'])) {
 
-	public function actionSeek() {
+			if (isset($_POST['id'])) {
+				$id = $_POST['id'];
+				$result = null;
+				$result = Admin::deleteUserById($id);
 
-		$search = isset($_POST['search']) ? $this->input($_POST['search']) : '';
+				if ($result) {
+					//require_once ROOT . '/views/admin/delete.php';
 
-		if (isset($_POST['submitSearch'])) {
-			if (empty($search) || (mb_strlen($search, 'UTF8') < 4)) {
-				exit("<p>Поисковый запрос не введен , либо он менее 4-х символов.</p>");
+				}
 			}
-			//$search = $this->input($search);
-		} else {
-			exit("<p>Вы обратились к файлу без необходимых параметров</p>");
+
 		}
 
-		$date = array();
-		$date = Data::searchData($search);
+		require_once ROOT . '/views/admin/delete.php';
 
-		require_once ROOT . '/views/notes/search.php';
+		return true;
 
+	}
+
+	public function actionEdit() {
+
+		if (isset($_POST['submitEdit'])) {
+
+			if (isset($_POST['id'])) {
+				$id = $_POST['id'];
+				$data = Admin::Edit($id);
+				//require_once ROOT . '/views/admin/edit.php';
+			}
+
+		}
+
+		require_once ROOT . '/views/admin/edit.php';
+
+		return true;
+
+	}
+
+	public function actionUpdate() {
+		require_once ROOT . '/views/admin/update.php';
 		return true;
 
 	}

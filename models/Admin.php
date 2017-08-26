@@ -25,22 +25,22 @@ class Admin {
 	 * Редактирование данных пользователя
 
 	 */
-	public static function edit($id, $name, $password) {
-		// Соединение с БД
-		$db = Db::getConnection();
+	// public static function edit($id, $name, $password) {
+	// 	// Соединение с БД
+	// 	$db = Db::getConnection();
 
-		// Текст запроса к БД
-		$sql = "UPDATE admin
-            SET name = :name, password = :password
-            WHERE id = :id";
+	// 	// Текст запроса к БД
+	// 	$sql = "UPDATE admin
+	//            SET name = :name, password = :password
+	//            WHERE id = :id";
 
-		// Получение и возврат результатов. Используется подготовленный запрос
-		$result = $db->prepare($sql);
-		$result->bindParam(':id', $id, PDO::PARAM_INT);
-		$result->bindParam(':name', $name, PDO::PARAM_STR);
-		$result->bindParam(':password', $password, PDO::PARAM_STR);
-		return $result->execute();
-	}
+	// 	// Получение и возврат результатов. Используется подготовленный запрос
+	// 	$result = $db->prepare($sql);
+	// 	$result->bindParam(':id', $id, PDO::PARAM_INT);
+	// 	$result->bindParam(':name', $name, PDO::PARAM_STR);
+	// 	$result->bindParam(':password', $password, PDO::PARAM_STR);
+	// 	return $result->execute();
+	// }
 
 	/**
 	 * Проверяем существует ли пользователь с заданными $email и $password
@@ -114,7 +114,7 @@ class Admin {
 			return $_SESSION['admin'];
 		}
 
-		header("Location: /admin");
+		header("Location: /login");
 	}
 
 	// /**
@@ -222,24 +222,93 @@ class Admin {
 	}
 
 	public static function searchData($search) {
+
 		$db = Db::getConnection();
-		$result = $db->query("SELECT id,title,description,date,author,mini_img,view FROM data
-		WHERE text LIKE '%$search%'");
-		$data_temp = array();
+
+		$statement = $db->prepare('SELECT id,name,email FROM users
+		WHERE name LIKE :search');
+		$statement->execute([':search' => "%{$search}%"]);
+
+		$data_temp = [];
 		$i = 0;
-		while ($row = $result->fetch()) {
+		while ($row = $statement->fetch()) {
 			$data_temp[$i]['id'] = $row['id'];
-			$data_temp[$i]['title'] = $row['title'];
-			$data_temp[$i]['description'] = $row['description'];
-			$data_temp[$i]['date'] = $row['date'];
-			$data_temp[$i]['author'] = $row['author'];
-			$data_temp[$i]['mini_img'] = $row['mini_img'];
-			$data_temp[$i]['view'] = $row['view'];
+			$data_temp[$i]['name'] = $row['name'];
+			$data_temp[$i]['email'] = $row['email'];
 
 			$i++;
 		}
 
 		return $data_temp;
+	}
+
+	public static function deleteUserById($id) {
+
+		$db = Db::getConnection();
+
+		$statement = $db->prepare('DELETE FROM users WHERE id = :id');
+
+		return $statement->execute([':id' => $id]);
+
+	}
+
+	public static function Edit($id) {
+
+		$db = Db::getConnection();
+
+		$db->beginTransaction();
+
+		try {
+			$statement1 = $db->prepare('SELECT * FROM users WHERE id = :id');
+			$statement1->execute([':id' => $id]);
+
+			$statement2 = $db->prepare('SELECT * FROM comments WHERE id_user = :id');
+			$statement2->execute([':id' => $id]);
+
+			$db->commit();
+
+			$user = [];
+
+			while ($row = $statement1->fetch(PDO::FETCH_ASSOC)) {
+				$user['id'] = $row['id'];
+				$user['name'] = $row['name'];
+				$user['email'] = $row['email'];
+
+			}
+
+			$comments = [];
+			$i = 0;
+			while ($row = $statement2->fetch(PDO::FETCH_ASSOC)) {
+				$comments[$i]['id'] = $row['id'];
+				$comments[$i]['dateComment'] = $row['dateComment'];
+				$comments[$i]['ip'] = $row['ip'];
+				$comments[$i]['browser'] = $row['browser'];
+				$comments[$i]['textComment'] = $row['textComment'];
+
+				$i++;
+			}
+			$data = [];
+			$data['user'] = $user;
+			$data['comments'] = $comments;
+
+			return $data;
+
+		} catch (Exception $e) {
+
+			$db->rollBack();
+			echo "Ошибка: " . $e->getMessage();
+		}
+
+	}
+
+	public static function update($id) {
+
+		$db = Db::getConnection();
+
+		//$statement = $db->prepare('DELETE FROM users WHERE id = :id');
+
+		//return $statement->execute([':id' => $id]);
+
 	}
 
 }

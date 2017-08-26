@@ -12,6 +12,9 @@ return array(
 	'admin' => 'admin/form',
 	'login' => 'admin/login',
 	'cabinet' => 'admin/cabinet',
+	'delete' => 'admin/delete',
+	'edit' => 'admin/edit',
 	'total' => 'book/totalcomments',
+	'update' => 'admin/update',
 
 );
