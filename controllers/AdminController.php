@@ -1,10 +1,5 @@
 <?php
 
-/**
- * Контроллер AdminController
- * Главная страница в админпанели
- */
-
 class AdminController extends AdminBase {
 
 	private function input($data) {
@@ -20,41 +15,31 @@ class AdminController extends AdminBase {
 		return true;
 	}
 
-	/**
-	 * Action для страницы "Вход на сайт"
-	 */
 	public function actionLogin() {
-		// Переменные для формы
+
 		$name = false;
 		$password = false;
 
-		// Обработка формы
 		if (isset($_POST['submit'])) {
-			// Если форма отправлена
-			// Получаем данные из формы
+
 			$name = $_POST['name'];
 			$password = $_POST['password'];
 
-			// Флаг ошибок
 			$errors = false;
 
-			// Проверяем существует ли пользователь
-			// $adminId = Admin::checkAdminData($name, $password);
 			$adminId = Admin::checkAdminHash($name, $password);
 
 			if ($adminId == false) {
-				// Если данные неправильные - показываем ошибку
+
 				$errors[] = 'Неправильные данные для входа     ';
 			} else {
-				// Если данные правильные, запоминаем пользователя (сессия)
+
 				Admin::auth($adminId);
 
-				// Перенаправляем пользователя в закрытую часть - кабинет
 				header("Location: /cabinet");
 			}
 		}
 
-		// Подключаем вид
 		require_once ROOT . '/views/admin/admin_form.php';
 		return true;
 	}
@@ -125,6 +110,33 @@ class AdminController extends AdminBase {
 	}
 
 	public function actionUpdate() {
+
+		if (isset($_POST['submitChanges'])) {
+
+			if (!empty($_POST['commentid']) && !empty($_POST['userid'])) {
+
+				$userid = $_POST['userid'];
+				$userName = $_POST['userName'];
+				$userEmail = $_POST['userEmail'];
+
+				$commentid = $_POST['commentid'];
+				$dateComment = $_POST['dateCom'];
+				$ip = $_POST['ip'];
+				$browser = $_POST['browser'];
+				$textComment = $_POST['textComment'];
+
+				Admin::update($userid, $userName, $userEmail, $commentid, $dateComment, $ip, $browser, $textComment);
+
+				// foreach ($commentid as $key => $id) {
+				// 	echo $id . '<br>';
+				// 	echo $dateComment[$key] . '<br>';
+				// 	echo $ip[$key] . '<br>';
+				// 	echo $browser[$key] . '<br>';
+				// 	echo $textComment[$key] . '<br><br>';
+				// }
+			}
+
+		}
 		require_once ROOT . '/views/admin/update.php';
 		return true;
 

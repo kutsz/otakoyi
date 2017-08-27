@@ -2,83 +2,51 @@
 
 class Admin {
 
-	/**
-	 * Регистрация пользователя
+	// public static function register($name, $password) { //??????????????
 
-	 */
-	public static function register($name, $password) {
-		// Соединение с БД
-		$db = Db::getConnection();
-
-		// Текст запроса к БД
-		$sql = 'INSERT INTO admin (name, password) '
-			. 'VALUES (:name, :password)';
-
-		// Получение и возврат результатов. Используется подготовленный запрос
-		$result = $db->prepare($sql);
-		$result->bindParam(':name', $name, PDO::PARAM_STR);
-		$result->bindParam(':password', $password, PDO::PARAM_STR);
-		return $result->execute();
-	}
-
-	/**
-	 * Редактирование данных пользователя
-
-	 */
-	// public static function edit($id, $name, $password) {
-	// 	// Соединение с БД
 	// 	$db = Db::getConnection();
 
-	// 	// Текст запроса к БД
-	// 	$sql = "UPDATE admin
-	//            SET name = :name, password = :password
-	//            WHERE id = :id";
+	// 	$sql = 'INSERT INTO admin (name, password) '
+	// 		. 'VALUES (:name, :password)';
 
-	// 	// Получение и возврат результатов. Используется подготовленный запрос
 	// 	$result = $db->prepare($sql);
-	// 	$result->bindParam(':id', $id, PDO::PARAM_INT);
 	// 	$result->bindParam(':name', $name, PDO::PARAM_STR);
 	// 	$result->bindParam(':password', $password, PDO::PARAM_STR);
 	// 	return $result->execute();
 	// }
 
-	/**
-	 * Проверяем существует ли пользователь с заданными $email и $password
-	 */
-	public static function checkAdminData($name, $password) {
-		// Соединение с БД
-		$db = Db::getConnection();
-		// Текст запроса к БД
-		$sql = 'SELECT * FROM admin WHERE name = :name AND password = :password';
+	// public static function checkAdminData($name, $password) {  //???????????
+	// 	// Соединение с БД
+	// 	$db = Db::getConnection();
+	// 	// Текст запроса к БД
+	// 	$sql = 'SELECT * FROM admin WHERE name = :name AND password = :password';
 
-		// Получение результатов. Используется подготовленный запрос
-		$result = $db->prepare($sql);
-		$result->bindParam(':name', $name, PDO::PARAM_INT);
-		$result->bindParam(':password', $password, PDO::PARAM_INT);
-		$result->execute();
+	// 	// Получение результатов. Используется подготовленный запрос
+	// 	$result = $db->prepare($sql);
+	// 	$result->bindParam(':name', $name, PDO::PARAM_INT);
+	// 	$result->bindParam(':password', $password, PDO::PARAM_INT);
+	// 	$result->execute();
 
-		// Обращаемся к записи
-		$admin = $result->fetch();
+	// 	// Обращаемся к записи
+	// 	$admin = $result->fetch();
 
-		if ($admin) {
-			// Если запись существует, возвращаем id пользователя
-			return $admin['id'];
-		}
-		return false;
-	}
+	// 	if ($admin) {
+	// 		// Если запись существует, возвращаем id пользователя
+	// 		return $admin['id'];
+	// 	}
+	// 	return false;
+	// }
 
 	public static function checkAdminHash($name, $password) {
-		// Соединение с БД
+
 		$db = Db::getConnection();
-		// Текст запроса к БД
+
 		$sql = 'SELECT * FROM admin WHERE name = :name';
 
-		// Получение результатов. Используется подготовленный запрос
 		$result = $db->prepare($sql);
 		$result->bindParam(':name', $name, PDO::PARAM_INT);
 		$result->execute();
 
-		// Обращаемся к записи
 		$admin = $result->fetch();
 
 		$valid = false;
@@ -94,22 +62,14 @@ class Admin {
 		return false;
 	}
 
-	/**
-	 * Запоминаем пользователя
-	 * @param integer $userId <p>id пользователя</p>
-	 */
 	public static function auth($adminId) {
+
 		// Записываем идентификатор пользователя в сессию
 		$_SESSION['admin'] = $adminId;
 	}
 
-	/**
-	 * Возвращает идентификатор пользователя, если он авторизирован.<br/>
-	 * Иначе перенаправляет на страницу входа
-	 * @return string <p>Идентификатор пользователя</p>
-	 */
 	public static function checkLogged() {
-		// Если сессия есть, вернем идентификатор пользователя
+
 		if (isset($_SESSION['admin'])) {
 			return $_SESSION['admin'];
 		}
@@ -117,104 +77,15 @@ class Admin {
 		header("Location: /login");
 	}
 
-	// /**
-	//  * Проверяет является ли пользователь гостем
-	//  * @return boolean <p>Результат выполнения метода</p>
-	//  */
-	// public static function isGuest() {
-	// 	if (isset($_SESSION['user'])) {
-	// 		return false;
-	// 	}
-	// 	return true;
-	// }
-
-	// /**
-	//  * Проверяет имя: не меньше, чем 2 символа
-	//  * @param string $name <p>Имя</p>
-	//  * @return boolean <p>Результат выполнения метода</p>
-	//  */
-	// public static function checkName($name) {
-	// 	if (strlen($name) >= 2) {
-	// 		return true;
-	// 	}
-	// 	return false;
-	// }
-
-	// /**
-	//  * Проверяет телефон: не меньше, чем 10 символов
-	//  * @param string $phone <p>Телефон</p>
-	//  * @return boolean <p>Результат выполнения метода</p>
-	//  */
-	// public static function checkPhone($phone) {
-	// 	if (strlen($phone) >= 10) {
-	// 		return true;
-	// 	}
-	// 	return false;
-	// }
-
-	// /**
-	//  * Проверяет имя: не меньше, чем 6 символов
-	//  * @param string $password <p>Пароль</p>
-	//  * @return boolean <p>Результат выполнения метода</p>
-	//  */
-	// public static function checkPassword($password) {
-	// 	if (strlen($password) >= 6) {
-	// 		return true;
-	// 	}
-	// 	return false;
-	// }
-
-	// /**
-	//  * Проверяет email
-	//  * @param string $email <p>E-mail</p>
-	//  * @return boolean <p>Результат выполнения метода</p>
-	//  */
-	// public static function checkEmail($email) {
-	// 	if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
-	// 		return true;
-	// 	}
-	// 	return false;
-	// }
-
-	// /**
-	//  * Проверяет не занят ли email другим пользователем
-	//  * @param type $email <p>E-mail</p>
-	//  * @return boolean <p>Результат выполнения метода</p>
-	//  */
-	// public static function checkEmailExists($email) {
-	// 	// Соединение с БД
-	// 	$db = Db::getConnection();
-
-	// 	// Текст запроса к БД
-	// 	$sql = 'SELECT COUNT(*) FROM user WHERE email = :email';
-
-	// 	// Получение результатов. Используется подготовленный запрос
-	// 	$result = $db->prepare($sql);
-	// 	$result->bindParam(':email', $email, PDO::PARAM_STR);
-	// 	$result->execute();
-
-	// 	if ($result->fetchColumn()) {
-	// 		return true;
-	// 	}
-
-	// 	return false;
-	// }
-
-	/**
-	 * Возвращает пользователя с указанным id
-	 */
 	public static function getUserById($id) {
-		// Соединение с БД
+
 		$db = Db::getConnection();
 
-		// Текст запроса к БД
 		$sql = 'SELECT * FROM admin WHERE id = :id';
 
-		// Получение и возврат результатов. Используется подготовленный запрос
 		$result = $db->prepare($sql);
 		$result->bindParam(':id', $id, PDO::PARAM_INT);
 
-		// Указываем, что хотим получить данные в виде массива
 		$result->setFetchMode(PDO::FETCH_ASSOC);
 		$result->execute();
 
@@ -301,13 +172,66 @@ class Admin {
 
 	}
 
-	public static function update($id) {
+	public static function updateUser($id, $name, $email) {
 
 		$db = Db::getConnection();
 
-		//$statement = $db->prepare('DELETE FROM users WHERE id = :id');
+		$statement = $db->prepare('UPDATE users SET name = :name, email = :email WHERE id = :id');
+		$statement->execute([
+			':id' => $id,
+			':name' => $name,
+			':email' => $email,
+		]);
 
-		//return $statement->execute([':id' => $id]);
+	}
+
+	public static function updateComment(&$db, $id, $dateComment, $ip, $browser, $textComment) {
+
+		//$db = Db::getConnection();
+
+		$statement = $db->prepare('UPDATE comments
+			                        SET
+			                        dateComment = :dateComment,
+			                        ip = :ip,
+		                            browser = :browser,
+		                            textComment = :textComment
+		                            WHERE id = :id');
+		$statement->execute([
+			':id' => $id,
+			':dateComment' => $dateComment,
+			':ip' => $ip,
+			':browser' => $browser,
+			':textComment' => $textComment,
+		]);
+
+	}
+
+	public static function update($iduser, $name, $email, array $idcmt, array $datecmt, array $ip, array $browser,
+		array $textcmt) {
+
+		$db = Db::getConnection();
+
+		$db->beginTransaction();
+
+		try {
+			$statement = $db->prepare('UPDATE users SET name = :name, email = :email WHERE id = :id');
+			$statement->execute([
+				':id' => $iduser,
+				':name' => $name,
+				':email' => $email,
+			]);
+
+			foreach ($idcmt as $key => $id) {
+				self::updateComment($db, $id, $datecmt[$key], $ip[$key], $browser[$key], $textcmt[$key]);
+			}
+
+			$db->commit();
+
+		} catch (Exception $e) {
+
+			$db->rollBack();
+			echo "Ошибка: " . $e->getMessage();
+		}
 
 	}
 
