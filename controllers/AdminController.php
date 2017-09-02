@@ -9,12 +9,6 @@ class AdminController extends AdminBase {
 		return $data;
 	}
 
-	public function actionForm() {
-
-		require_once ROOT . '/views/admin/admin_form.php';
-		return true;
-	}
-
 	public function actionLogin() {
 
 		$name = false;
@@ -98,7 +92,6 @@ class AdminController extends AdminBase {
 			if (isset($_POST['id'])) {
 				$id = $_POST['id'];
 				$data = Admin::Edit($id);
-				//require_once ROOT . '/views/admin/edit.php';
 			}
 
 		}
@@ -127,13 +120,6 @@ class AdminController extends AdminBase {
 
 				Admin::update($userid, $userName, $userEmail, $commentid, $dateComment, $ip, $browser, $textComment);
 
-				// foreach ($commentid as $key => $id) {
-				// 	echo $id . '<br>';
-				// 	echo $dateComment[$key] . '<br>';
-				// 	echo $ip[$key] . '<br>';
-				// 	echo $browser[$key] . '<br>';
-				// 	echo $textComment[$key] . '<br><br>';
-				// }
 			}
 
 		}

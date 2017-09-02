@@ -1,118 +1,80 @@
 <?php
 
-/**
- * Контроллер UserController
- */
-class UserController
-{
-    /**
-     * Action для страницы "Регистрация"
-     */
-    public function actionRegister()
-    {
-        // Переменные для формы
-        $name = false;
-        $email = false;
-        $password = false;
-        $result = false;
+class UserController {
 
-        // Обработка формы
-        if (isset($_POST['submit'])) {
-            // Если форма отправлена 
-            // Получаем данные из формы
-            $name = $_POST['name'];
-            $email = $_POST['email'];
-            $password = $_POST['password'];
+	public function actionRegister() {
+		$name = false;
+		$email = false;
+		$password = false;
+		$result = false;
 
-            // Флаг ошибок
-            $errors = false;
+		if (isset($_POST['submit'])) {
+			$name = $_POST['name'];
+			$email = $_POST['email'];
+			$password = $_POST['password'];
 
-            // Валидация полей
-            if (!User::checkName($name)) {
-                $errors[] = 'Имя не должно быть короче 2-х символов';
-            }
-            if (!User::checkEmail($email)) {
-                $errors[] = 'Неправильный email';
-            }
-            if (!User::checkPassword($password)) {
-                $errors[] = 'Пароль не должен быть короче 6-ти символов';
-            }
-            if (User::checkEmailExists($email)) {
-                $errors[] = 'Такой email уже используется';
-            }
-            
-            if ($errors == false) {
-                // Если ошибок нет
-                // Регистрируем пользователя
-                $result = User::register($name, $email, $password);
-            }
-        }
+			$errors = false;
 
-        // Подключаем вид
-        require_once(ROOT . '/views/user/register.php');
-        return true;
-    }
-    
-    /**
-     * Action для страницы "Вход на сайт"
-     */
-    public function actionLogin()
-    {
-        // Переменные для формы
-        $email = false;
-        $password = false;
-        
-        // Обработка формы
-        if (isset($_POST['submit'])) {
-            // Если форма отправлена 
-            // Получаем данные из формы
-            $email = $_POST['email'];
-            $password = $_POST['password'];
+			if (!User::checkName($name)) {
+				$errors[] = 'Имя не должно быть короче 2-х символов';
+			}
+			if (!User::checkEmail($email)) {
+				$errors[] = 'Неправильный email';
+			}
+			if (!User::checkPassword($password)) {
+				$errors[] = 'Пароль не должен быть короче 6-ти символов';
+			}
+			if (User::checkEmailExists($email)) {
+				$errors[] = 'Такой email уже используется';
+			}
 
-            // Флаг ошибок
-            $errors = false;
+			if ($errors == false) {
+				$result = User::register($name, $email, $password);
+			}
+		}
 
-            // Валидация полей
-            if (!User::checkEmail($email)) {
-                $errors[] = 'Неправильный email';
-            }
-            if (!User::checkPassword($password)) {
-                $errors[] = 'Пароль не должен быть короче 6-ти символов';
-            }
+		require_once ROOT . '/views/user/register.php';
+		return true;
+	}
 
-            // Проверяем существует ли пользователь
-            $userId = User::checkUserData($email, $password);
+	public function actionLogin() {
+		$email = false;
+		$password = false;
 
-            if ($userId == false) {
-                // Если данные неправильные - показываем ошибку
-                $errors[] = 'Неправильные данные для входа на сайт';
-            } else {
-                // Если данные правильные, запоминаем пользователя (сессия)
-                User::auth($userId);
+		if (isset($_POST['submit'])) {
+			$email = $_POST['email'];
+			$password = $_POST['password'];
 
-                // Перенаправляем пользователя в закрытую часть - кабинет 
-                header("Location: /cabinet");
-            }
-        }
+			$errors = false;
 
-        // Подключаем вид
-        require_once(ROOT . '/views/user/login.php');
-        return true;
-    }
+			if (!User::checkEmail($email)) {
+				$errors[] = 'Неправильный email';
+			}
+			if (!User::checkPassword($password)) {
+				$errors[] = 'Пароль не должен быть короче 6-ти символов';
+			}
 
-    /**
-     * Удаляем данные о пользователе из сессии
-     */
-    public function actionLogout()
-    {
-        // Стартуем сессию
-        session_start();
-        
-        // Удаляем информацию о пользователе из сессии
-        unset($_SESSION["user"]);
-        
-        // Перенаправляем пользователя на главную страницу
-        header("Location: /");
-    }
+			$userId = User::checkUserData($email, $password);
+
+			if ($userId == false) {
+				$errors[] = 'Неправильные данные для входа на сайт';
+			} else {
+				User::auth($userId);
+
+				header("Location: /cabinet");
+			}
+		}
+
+		require_once ROOT . '/views/user/login.php';
+		return true;
+	}
+
+	public function actionLogout() {
+		session_start();
+
+		unset($_SESSION["user"]);
+
+		header("Location: /");
+	}
 
 }

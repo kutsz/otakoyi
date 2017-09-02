@@ -2,41 +2,6 @@
 
 class Admin {
 
-	// public static function register($name, $password) { //??????????????
-
-	// 	$db = Db::getConnection();
-
-	// 	$sql = 'INSERT INTO admin (name, password) '
-	// 		. 'VALUES (:name, :password)';
-
-	// 	$result = $db->prepare($sql);
-	// 	$result->bindParam(':name', $name, PDO::PARAM_STR);
-	// 	$result->bindParam(':password', $password, PDO::PARAM_STR);
-	// 	return $result->execute();
-	// }
-
-	// public static function checkAdminData($name, $password) {  //???????????
-	// 	// Соединение с БД
-	// 	$db = Db::getConnection();
-	// 	// Текст запроса к БД
-	// 	$sql = 'SELECT * FROM admin WHERE name = :name AND password = :password';
-
-	// 	// Получение результатов. Используется подготовленный запрос
-	// 	$result = $db->prepare($sql);
-	// 	$result->bindParam(':name', $name, PDO::PARAM_INT);
-	// 	$result->bindParam(':password', $password, PDO::PARAM_INT);
-	// 	$result->execute();
-
-	// 	// Обращаемся к записи
-	// 	$admin = $result->fetch();
-
-	// 	if ($admin) {
-	// 		// Если запись существует, возвращаем id пользователя
-	// 		return $admin['id'];
-	// 	}
-	// 	return false;
-	// }
-
 	public static function checkAdminHash($name, $password) {
 
 		$db = Db::getConnection();
@@ -56,7 +21,6 @@ class Admin {
 		}
 
 		if ($admin && $valid) {
-			// Если запись существует, возвращаем id пользователя
 			return $admin['id'];
 		}
 		return false;
@@ -64,7 +28,6 @@ class Admin {
 
 	public static function auth($adminId) {
 
-		// Записываем идентификатор пользователя в сессию
 		$_SESSION['admin'] = $adminId;
 	}
 

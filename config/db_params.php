@@ -8,3 +8,5 @@ return array(
 	'password' => '123',
 	'charset' => 'utf8',
 );
+
+//     nimda  php4t813w

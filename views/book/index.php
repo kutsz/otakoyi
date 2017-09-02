@@ -46,11 +46,9 @@
 	</form>
 
 
-	<a href="/ajax">Comments to look</a><br>
-<!-- <a href="/view">Comments to look</a><br> -->
+	<a href="/info">Comments to look</a><br>
 
 </body>
 
 </html>
-<!-- required -->
 

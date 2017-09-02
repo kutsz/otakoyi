@@ -68,13 +68,6 @@ class BookController {
 
 					User::UserCommentAdd($name, $email, $date, $ip, $browser, $text);
 
-					// User::addUser($name, $email);
-					// $user = User::getUserByEmail($email);
-					// // echo $user['id'] . '<br>';
-					// // echo $user['name'] . '<br>';
-					// // echo $user['email'] . '<br>';
-					// User::addComment($user['id'], $date, $ip, $browser, $text);
-
 				}
 
 			}
@@ -85,47 +78,18 @@ class BookController {
 		return true;
 	}
 
-	// public function actionView() {
+	public function actionInfo($page = 1) {
 
-	// 	$users = User::getUserComments();
-	// 	require_once ROOT . '/views/book/view.php';
-
-	// }
-
-	public function actionView($page = 1) {
-
-		$users = User::getUserComments($page);
-		$total = User::getTotalUsers();
-
-		// Создаем объект Pagination - постраничная навигация
-		$pagination = new Pagination($total, $page, User::SHOW_BY_DEFAULT, 'page-');
-
-		require_once ROOT . '/views/book/view.php';
-
-	}
-
-	public function actionAjax($page = 1) {
-
-		$users = User::getUserComments($page);
-		$total = User::getTotalUsers();
-
-		// Создаем объект Pagination - постраничная навигация
-		$pagination = new Pagination($total, $page, User::SHOW_BY_DEFAULT, 'page-');
-
-		require_once ROOT . '/views/book/ajaxview.php';
+		require_once ROOT . '/views/book/infoview.php';
 
 	}
 
 	public function actionJson($page = 1) {
 		$users = [];
 
-		//ob_start();
 		$users = User::getUserComments($page);
-		//header('Content-Type: application/json');
-		//ob_end_clean();
 
 		echo json_encode($users, true);
-		//echo 'данные test test вфеф';
 
 	}
 

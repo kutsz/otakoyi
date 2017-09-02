@@ -4,7 +4,6 @@
 <meta charset="utf-8">
 <title>book of complaints</title>
 <link href="/template/css/style.css" rel="stylesheet">
-<script src="/template/js/jquery-3.2.1.min.js"></script>
 
 </head>
 <body>
